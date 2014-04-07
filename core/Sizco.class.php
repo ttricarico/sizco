@@ -1,53 +1,53 @@
 <?php
 
 class Sizco{
-	
+
 	public static $instance;
 	public $route;
 	public $appVersion = '1.0a';
 	public $events;
-	
+
 	private $plugins = array();
 	private $eventListeners = array();
 	private $sessionId;
-	
-	
+
+
 	public function __construct() {
 		global $databaseInfo, $setting;
-		
+
 		ob_start();
 		self::$instance = $this;
 		$this->events = new Events();
-		
+
 		$this->sessionStart();
 		$this->db = new Database($databaseInfo['dbname'], $databaseInfo['host'], $databaseInfo['user'], $databaseInfo['pass']);
 		$this->route = new Router($this->db);
 		$this->registerPlugins();
 		//after plugins are registerd
 		$this->events->fireEvent(Events::EVENT_STARTUP);
-		
+
 		$this->route->run();
 	}
-	
+
 	public function __destruct() {
 		$this->events->fireEvent(Events::EVENT_SHUTDOWN);
 	}
-	
+
 	/**
-	 * Registers plugins found in /plugins. 
+	 * Registers plugins found in /plugins.
 	 */
-	 
+
 	private function registerPlugins() {
 		//later, something with routes and such
-		
-		
+
+
 	}
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	//session controls
 	public function sessionStart() {
 		session_start();
@@ -69,13 +69,13 @@ class Sizco{
 		else {
 			return $_SESSION[$key];
 		}
-		
+
 	}
 	public function sessionDelete($key = null) {
 		unset($_SESSION[$key]);
 		return true;
 	}
-	
+
 	/** templating **/
 	public function printToScreen($data) {
 		//add the beginning html stuff
@@ -85,6 +85,13 @@ class Sizco{
 			//the templates have the beginning of the html
 			echo $data;
 		}
-		
+
 	}
+}
+
+//external function
+function errorShutdown($errormessage) {
+
+
+	$sizco->__destruct();
 }

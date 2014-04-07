@@ -1,16 +1,16 @@
 <?php
 
 class Router {
-	
+
 	const httpGET = 'GET';
 	const httpPOST = 'POST';
 	const httpPUT = 'PUT';
 	const httpDELETE = 'DELETE';
-	
+
 	private $routeKey = '__route__';
 	private $routes = array();
 	private $regexes = array();
-	
+
 	private $httpCodes = array(200 => 'OK',
 								303 => 'See Other',
 								307 => 'Temporary Redirect',
@@ -20,12 +20,12 @@ class Router {
 								404 => 'Not Found',
 								420 => 'Enhance Your Calm',
 								500 => 'Internal Server Error');
-								
+
 	public function __construct($db) {
 		/**
 		 * We don't care about plugin routes, those are added as the
 		 * plugins are registered and initialized. Instead, we only
-		 * want to worry about the 'soft routes,' the ones to the 
+		 * want to worry about the 'soft routes,' the ones to the
 		 * database-powered pages and such.
 		 */
 		//get pages from database
@@ -34,19 +34,29 @@ class Router {
 		foreach($pages as $p) {
 			$this->addRoute($p['method'], $p['path'], array('PageCreator', 'startTheMagic'));
 		}
-		
+
 	}
-	
+
 	public function redirect($path) {
-		
+
 	}
-	
+
+	public function loadRoutesFile($file) {
+		//check to make sure the file is actually there
+		if(file_exists($setting['root_path'].'/'.$file)) {
+
+		}
+		else {
+			//and then skip, but we can log it.
+		}
+	}
+
 	//for plugins to add routes
 	public function newRoute($method, $path, $callback) {
 		//eventually, do a check to make sure stuff
 		$this->addRoute($method, $path, $callback);
-	} 
-	
+	}
+
 	private function addRoute($method, $path, $callback) {
 		$this->routes[] = array('httpMethod' => $method,
 								'path' => $path,
@@ -58,7 +68,7 @@ class Router {
 			throw new Exception("Can't find route or method");
 			return false;
 		}
-		
+
 		foreach($this->regexes as $i => $regex) {
 			if(preg_match($regex, $path, $arguments)) {
 				array_shift($arguments);
@@ -79,15 +89,15 @@ class Router {
 		throw new Excpetion("Can't find route {$path}");
 	}
 	public function run() {
-		
+
 		$path = isset($_REQUEST[$this->routeKey]) ? $_REQUEST[$this->routeKey] : '/'; //get request path
 		$httpMethod = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : self::httpGET;
-		
+
 		$route = $this->getRoute($path, $httpMethod);	//get route to run
 		ob_start();
 		$call_user_func_array($route['callback'], $route['arguments']);
 		$data = ob_get_flush();
-		
+
 		//send to templating
 		Sizico::$instance -> printToScreen($data);
 	}

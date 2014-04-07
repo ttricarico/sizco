@@ -1,9 +1,9 @@
 <?php
 
 class Database{
-	
+
 	private $db;
-	
+
 	public function __construct($db, $host, $user, $pass) {
 		try{
 			$this->db = new PDO("mysql:host={$host};dbname={$db}", $user, $pass);
@@ -11,10 +11,10 @@ class Database{
 			return true;
 		}
 		catch(Exception $e) {
-			die('<h1>Database Error</h1>');
+			die('<h1>Database Error: Cannot connect.</h1><br/>'.$e->getMessage());
 		}
 	}
-	
+
 	public function one($query, $vars) {
 		try {
 			$p = $this->prepare($query, $params);
