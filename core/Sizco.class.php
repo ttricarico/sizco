@@ -26,7 +26,6 @@ class Sizco{
 		//after plugins are registerd
 		$this->events->fireEvent(Events::EVENT_STARTUP);
 
-		$this->route->run();
 	}
 
 	public function __destruct() {
@@ -87,11 +86,15 @@ class Sizco{
 		}
 
 	}
+
 }
 
 //external function
-function errorShutdown($errormessage) {
+function errorShutdown($errorName, $errorMessage) {
 
+	ob_end_clean();
+	include('templates/fatal-error.php');
 
-	$sizco->__destruct();
+	die();
+
 }

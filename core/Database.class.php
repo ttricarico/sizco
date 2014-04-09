@@ -11,7 +11,7 @@ class Database{
 			return true;
 		}
 		catch(Exception $e) {
-			die('<h1>Database Error: Cannot connect.</h1><br/>'.$e->getMessage());
+			errorShutdown('Database Error: Cannot connect', $e->getMessage());
 		}
 	}
 

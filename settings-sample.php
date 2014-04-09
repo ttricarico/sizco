@@ -14,7 +14,7 @@ $databaseInfo['pass'] = '';
 
 $setting['server_name'] = '';
 $setting['root_path'] = realpath(dirname(__FILE__));
-
+$setting['site_name'] = 'Sizco Development';
 /** routing table **/
 $setting['routing_table'] = 'site-routes.php';
 
